@@ -484,13 +484,13 @@
           </svg>
           Voltear
         </button>
-        <!--<button class="tbtn tbtn--primary" id="printBtn" aria-label="Imprimir postal">
+        <button class="tbtn tbtn--primary" id="printBtn" aria-label="Imprimir postal">
           <svg viewBox="0 0 20 20" aria-hidden="true">
             <path d="M5 8V3h10v5M5 16h10v-4H5v4zM3 8h14v6H3z" fill="none" stroke="currentColor" stroke-width="1.6"
               stroke-linecap="round" stroke-linejoin="round" />
           </svg>
           Imprimir
-        </button>-->
+        </button>
       </div>
     </header>
 
@@ -586,12 +586,10 @@
             <!-- LEFT: dedication -->
             <div class="pb__left">
               <p class="pb__sub">Para</p>
-              <h3 class="pb__title">La familia <em data-bind-display="family">_____________</em></h3>
+              <h3 class="pb__title">La familia <em>:</em></h3>
 
               <div class="field">
-
-                <input id="familyInput" class="field__input--script" type="text" placeholder="Apellido o nombres"
-                  data-bind="family" maxlength="40" />
+                <h3 class="pb__title field__input--script"> <em data-bind-display="family">_____________</em></h3>
               </div>
 
               <div class="pb__counts">
@@ -601,9 +599,7 @@
                     <span class="count__sub">pases</span>
                   </div>
                   <div class="count__stepper">
-                    <button class="count__btn" data-step="-1" aria-label="Quitar adulto">−</button>
                     <span class="count__num" data-bind-display="adults">2</span>
-                    <button class="count__btn" data-step="+1" aria-label="Agregar adulto">+</button>
                   </div>
                 </div>
                 <div class="count" data-counter="kids">
@@ -612,9 +608,7 @@
                     <span class="count__sub">aventureros</span>
                   </div>
                   <div class="count__stepper">
-                    <button class="count__btn" data-step="-1" aria-label="Quitar niño">−</button>
                     <span class="count__num" data-bind-display="kids">1</span>
-                    <button class="count__btn" data-step="+1" aria-label="Agregar niño">+</button>
                   </div>
                 </div>
               </div>
