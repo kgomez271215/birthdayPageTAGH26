@@ -355,7 +355,7 @@
     }
   });
 
-  
+
   /* ---------- SPA TRANSITIONS ---------- */
   const mainView = document.getElementById('main-view');
   const invView = document.getElementById('invitation-view');
@@ -392,94 +392,117 @@
     });
   }
 
-(() => {
-      'use strict';
-      const card = document.getElementById('postcard');
-      const flipBtn = document.getElementById('flipBtn');
-      const printBtn = document.getElementById('printBtn');
+  (() => {
+    'use strict';
+    const card = document.getElementById('postcard');
+    const flipBtn = document.getElementById('flipBtn');
+    const printBtn = document.getElementById('printBtn');
 
-      /* ---- FLIP ---- */
-      function toggleFlip() { card.classList.toggle('is-flipped'); }
-      card.addEventListener('click', (e) => {
-        // ignore clicks inside form fields / buttons
-        if (e.target.closest('input, textarea, button')) return;
-        toggleFlip();
+    /* ---- FLIP ---- */
+    function toggleFlip() { card.classList.toggle('is-flipped'); }
+    card.addEventListener('click', (e) => {
+      // ignore clicks inside form fields / buttons
+      if (e.target.closest('input, textarea, button')) return;
+      toggleFlip();
+    });
+    card.addEventListener('keydown', (e) => {
+      if (e.target !== card) return;
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleFlip(); }
+    });
+    flipBtn.addEventListener('click', toggleFlip);
+
+    /* ---- TWO-WAY BIND (panel ↔ postcard) ---- */
+    const state = { family: '', adults: 0, kids: 0 };
+
+    function refresh() {
+      document.querySelectorAll('[data-bind-display]').forEach(el => {
+        const key = el.dataset.bindDisplay;
+        const v = state[key];
+        if (key === 'family') {
+          el.textContent = (v && v.trim()) ? v : '_____________';
+        } else {
+          el.textContent = v;
+        }
       });
-      card.addEventListener('keydown', (e) => {
-        if (e.target !== card) return;
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleFlip(); }
-      });
-      flipBtn.addEventListener('click', toggleFlip);
-
-      /* ---- TWO-WAY BIND (panel ↔ postcard) ---- */
-      const state = { family: '', adults: 2, kids: 1 };
-
-      function refresh() {
-        document.querySelectorAll('[data-bind-display]').forEach(el => {
-          const key = el.dataset.bindDisplay;
-          const v = state[key];
-          if (key === 'family') {
-            el.textContent = (v && v.trim()) ? v : '_____________';
-          } else {
-            el.textContent = v;
-          }
-        });
-        document.querySelectorAll('[data-bind]').forEach(el => {
-          const key = el.dataset.bind;
-          if (el.value !== String(state[key])) el.value = state[key];
-        });
-        // disable steppers at edges
-        document.querySelectorAll('[data-counter]').forEach(c => {
-          const key = c.dataset.counter;
-          const minus = c.querySelector('[data-step="-1"]');
-          const plus = c.querySelector('[data-step="+1"]');
-          if (minus) minus.disabled = state[key] <= 0;
-          if (plus) plus.disabled = state[key] >= 20;
-        });
-      }
-
       document.querySelectorAll('[data-bind]').forEach(el => {
-        el.addEventListener('input', () => {
-          const key = el.dataset.bind;
-          if (key === 'family') {
-            state.family = el.value;
-          } else {
-            let n = parseInt(el.value, 10);
-            if (isNaN(n)) n = 0;
-            state[key] = Math.max(0, Math.min(20, n));
+        const key = el.dataset.bind;
+        if (el.value !== String(state[key])) el.value = state[key];
+      });
+      // disable steppers at edges
+      document.querySelectorAll('[data-counter]').forEach(c => {
+        const key = c.dataset.counter;
+        const minus = c.querySelector('[data-step="-1"]');
+        const plus = c.querySelector('[data-step="+1"]');
+        if (minus) minus.disabled = state[key] <= 0;
+        if (plus) plus.disabled = state[key] >= 20;
+      });
+    }
+
+    document.querySelectorAll('[data-bind]').forEach(el => {
+      el.addEventListener('input', () => {
+        const key = el.dataset.bind;
+        if (key === 'family') {
+          state.family = el.value;
+        } else {
+          let n = parseInt(el.value, 10);
+          if (isNaN(n)) n = 0;
+          state[key] = Math.max(0, Math.min(20, n));
+        }
+        refresh();
+      });
+    });
+
+    document.querySelectorAll('[data-counter] [data-step]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const counter = btn.closest('[data-counter]');
+        const key = counter.dataset.counter;
+        const step = parseInt(btn.dataset.step, 10);
+        state[key] = Math.max(0, Math.min(20, state[key] + step));
+        refresh();
+      });
+    });
+
+    /* ---- FETCH FROM API ---- */
+    async function loadInvitation() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const hash = urlParams.get('inv');
+
+      if (hash) {
+        try {
+          // Usa localhost si se abre localmente, de lo contrario usa ruta relativa
+          const baseUrl = window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'https://project-bpyrl-git-main-pruebamega271215-4328s-projects.vercel.app'
+            : '';
+
+          const res = await fetch(`${baseUrl}/api/invitation/${hash}`);
+          if (res.ok) {
+            const json = await res.json();
+            if (json.success && json.data) {
+              state.family = json.data.f || '';
+              state.adults = json.data.nj || 0;
+              state.kids = json.data.j || 0;
+            }
           }
-          refresh();
-        });
-      });
-
-      document.querySelectorAll('[data-counter] [data-step]').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const counter = btn.closest('[data-counter]');
-          const key = counter.dataset.counter;
-          const step = parseInt(btn.dataset.step, 10);
-          state[key] = Math.max(0, Math.min(20, state[key] + step));
-          refresh();
-        });
-      });
-
+        } catch (e) {
+          console.error("Error al cargar la invitación:", e);
+        }
+      }
       refresh();
+    }
 
-      /* ---- PRINT (chooses currently-shown side) ---- */
-      printBtn.addEventListener('click', () => {
-        const side = card.classList.contains('is-flipped') ? 'back' : 'front';
-        document.body.classList.add('print-' + side);
-        setTimeout(() => {
-          window.print();
-          setTimeout(() => document.body.classList.remove('print-' + side), 500);
-        }, 50);
-      });
+    loadInvitation();
 
-      /* ---- KEYBOARD SHORTCUTS ---- */
-      document.addEventListener('keydown', (e) => {
-        if (e.target.matches('input, textarea')) return;
-        if (e.key.toLowerCase() === 'f') { toggleFlip(); }
-        if (e.key.toLowerCase() === 'p') { e.preventDefault(); printBtn.click(); }
-      });
-    })();
+    /* ---- PRINT (now prints both sides) ---- */
+    printBtn?.addEventListener('click', () => {
+      window.print();
+    });
+
+    /* ---- KEYBOARD SHORTCUTS ---- */
+    document.addEventListener('keydown', (e) => {
+      if (e.target.matches('input, textarea')) return;
+      if (e.key.toLowerCase() === 'f') { toggleFlip(); }
+      if (e.key.toLowerCase() === 'p') { e.preventDefault(); printBtn?.click(); }
+    });
+  })();
 })();

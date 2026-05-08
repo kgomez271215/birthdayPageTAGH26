@@ -2979,34 +2979,24 @@ section {
     width: 100% !important;
     max-width: 1050px !important;
     height: auto !important;
-    aspect-ratio: 1050/520 !important;
     transform: none !important;
     box-shadow: none !important;
-    page-break-inside: avoid;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 40px !important;
   }
 
   .postcard__face {
     position: relative !important;
     width: 100% !important;
-    height: 100% !important;
+    height: auto !important;
+    aspect-ratio: 1050/520 !important;
     box-shadow: none !important;
     border-radius: 0 !important;
     -webkit-transform: none !important;
     transform: none !important;
-  }
-
-  /* Show the side requested via body class */
-  body.print-front .postcard__face--back {
-    display: none !important;
-  }
-
-  body.print-back .postcard__face--front {
-    display: none !important;
-  }
-
-  body.print-back .postcard__face--back {
-    transform: none !important;
-    -webkit-transform: none !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
   }
 
   .count__btn {
