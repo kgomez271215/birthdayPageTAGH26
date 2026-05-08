@@ -471,9 +471,7 @@
       if (hash) {
         try {
           // Usa localhost si se abre localmente, de lo contrario usa ruta relativa
-          const baseUrl = window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-            ? 'https://project-bpyrl-git-main-pruebamega271215-4328s-projects.vercel.app'
-            : '';
+          const baseUrl = 'https://project-bpyrl-git-main-pruebamega271215-4328s-projects.vercel.app';
 
           const res = await fetch(`${baseUrl}/api/invitation/${hash}`);
           if (res.ok) {
