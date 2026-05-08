@@ -2942,7 +2942,7 @@ section {
 /* ---------- Print styles ---------- */
 @media print {
   @page {
-    size: 1050px 660px;
+    size: auto;
     margin: 0;
   }
 
@@ -2951,6 +2951,10 @@ section {
     background: white !important;
   }
 
+  #main-view,
+  .curtain,
+  .ambient,
+  .cursor,
   .sky,
   .toolbar,
   .head,
@@ -2961,20 +2965,34 @@ section {
     display: none !important;
   }
 
+  #invitation-view {
+    display: block !important;
+    opacity: 1 !important;
+    position: relative !important;
+  }
+
   .stage {
     padding: 0 !important;
   }
 
   .postcard {
-    width: 1050px !important;
-    height: 660px !important;
+    width: 100% !important;
+    max-width: 1050px !important;
+    height: auto !important;
+    aspect-ratio: 1050/520 !important;
     transform: none !important;
     box-shadow: none !important;
+    page-break-inside: avoid;
   }
 
   .postcard__face {
+    position: relative !important;
+    width: 100% !important;
+    height: 100% !important;
     box-shadow: none !important;
     border-radius: 0 !important;
+    -webkit-transform: none !important;
+    transform: none !important;
   }
 
   /* Show the side requested via body class */
@@ -2988,6 +3006,7 @@ section {
 
   body.print-back .postcard__face--back {
     transform: none !important;
+    -webkit-transform: none !important;
   }
 
   .count__btn {
