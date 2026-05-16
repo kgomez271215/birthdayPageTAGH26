@@ -3,9 +3,9 @@
    Hoja de estilos principal
    ========================================================= */
 
-/* ---------- 0. TOKENS ---------- */
+/* ---------- 0. VARIABLES ---------- */
 :root {
-  /* Palette */
+  /* Paleta de colores */
   --night-1: #060818;
   --night-2: #0a0e27;
   --night-3: #141a4a;
@@ -20,25 +20,25 @@
   --line: rgba(253, 246, 227, 0.14);
   --line-strong: rgba(253, 246, 227, 0.32);
 
-  /* Glass */
+  /* Cristal */
   --glass-bg: rgba(20, 26, 74, 0.32);
   --glass-bg-2: rgba(253, 246, 227, 0.04);
   --glass-border: rgba(253, 246, 227, 0.18);
 
-  /* Type */
+  /* Tipografía */
   --f-display: 'Fraunces', 'Times New Roman', serif;
   --f-body: 'Inter', system-ui, -apple-system, Segoe UI, sans-serif;
 
-  /* Layout */
+  /* Diseño / Maquetación */
   --max: 1180px;
   --pad: clamp(20px, 4vw, 56px);
 
-  /* Motion */
+  /* Animación */
   --ease: cubic-bezier(.22, .61, .36, 1);
   --ease-out: cubic-bezier(.16, 1, .3, 1);
 }
 
-/* ---------- 1. RESET ---------- */
+/* ---------- 1. REINICIO ---------- */
 *,
 *::before,
 *::after {
@@ -121,7 +121,7 @@ p {
   color: var(--night-2);
 }
 
-/* ---------- 2. CINEMATIC INTRO CURTAIN ---------- */
+/* ---------- 2. CORTINA DE INTRODUCCIÓN CINEMÁTICA ---------- */
 .curtain {
   position: fixed;
   inset: 0;
@@ -188,7 +188,7 @@ p {
   }
 }
 
-/* ---------- 3. SKY / STARFIELD ---------- */
+/* ---------- 3. CIELO / CAMPO DE ESTRELLAS ---------- */
 .sky {
   position: fixed;
   inset: 0;
@@ -316,7 +316,7 @@ p {
   }
 }
 
-/* ---------- 4. AMBIENT (paper planes etc) ---------- */
+/* ---------- 4. AMBIENTE (aviones de papel, etc) ---------- */
 .ambient {
   position: fixed;
   inset: 0;
@@ -389,7 +389,7 @@ p {
   }
 }
 
-/* ---------- 5. NAV ---------- */
+/* ---------- 5. NAVEGACIÓN ---------- */
 .nav {
   position: fixed;
   top: 0;
@@ -502,22 +502,83 @@ p {
   display: inline-block;
 }
 
+.nav__toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--warm);
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  cursor: pointer;
+  z-index: 201; /* Sobre el menú móvil */
+  position: relative;
+}
+
+.nav__toggle svg {
+  width: 24px;
+  height: 24px;
+}
+
+.nav__toggle-line {
+  transition: transform 0.3s var(--ease), opacity 0.3s var(--ease);
+  transform-origin: center;
+}
+
+.nav.is-open .nav__toggle-line--1 {
+  transform: translateY(6px) rotate(45deg);
+}
+
+.nav.is-open .nav__toggle-line--2 {
+  opacity: 0;
+}
+
+.nav.is-open .nav__toggle-line--3 {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
 @media (max-width: 820px) {
+  .nav__toggle {
+    display: block;
+  }
+
   .nav__links {
-    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    background: rgba(6, 8, 24, 0.96);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 36px;
+    font-size: 20px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s var(--ease), visibility 0.4s var(--ease);
+    z-index: 200;
+  }
+
+  .nav.is-open .nav__links {
+    opacity: 1;
+    visibility: visible;
   }
 }
 
-/* ---------- 6. SECTION HEADERS / SHARED ---------- */
+/* ---------- 6. ENCABEZADOS DE SECCIÓN / COMPARTIDOS ---------- */
 .countdown {
   position: relative;
-  padding: clamp(50px, 5vw, 110px) var(--pad);
+  padding: clamp(30px, 4vw, 70px) var(--pad);
   max-width: 100%;
 }
 
 section {
   position: relative;
-  padding: clamp(80px, 10vw, 140px) var(--pad);
+  padding: clamp(40px, 6vw, 80px) var(--pad);
   max-width: 100%;
 }
 
@@ -558,7 +619,7 @@ section {
   margin-inline: auto;
 }
 
-/* Reveal-on-scroll */
+/* Revelar al hacer scroll */
 .reveal {
   opacity: 0;
   transform: translateY(28px);
@@ -570,10 +631,11 @@ section {
   transform: none;
 }
 
-/* ---------- 7. BUTTONS ---------- */
+/* ---------- 7. BOTONES ---------- */
 .btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
   padding: 14px 26px;
   font-size: 14px;
@@ -583,11 +645,13 @@ section {
   position: relative;
   overflow: hidden;
   font-weight: 500;
+  white-space: nowrap;
 }
 
 .btn svg {
   width: 18px;
   height: 18px;
+  flex-shrink: 0;
 }
 
 .btn--primary {
@@ -633,7 +697,7 @@ section {
   font-size: 15px;
 }
 
-/* ---------- 8. GLASS CARD ---------- */
+/* ---------- 8. TARJETA DE CRISTAL ---------- */
 .glass {
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
@@ -645,13 +709,13 @@ section {
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
-/* ---------- 9. HERO ---------- */
+/* ---------- 9. SECCIÓN PRINCIPAL ---------- */
 .hero {
   min-height: 100vh;
   display: grid;
   place-items: center;
   padding-top: clamp(100px, 10vh, 160px);
-  padding-bottom: clamp(80px, 10vh, 120px);
+  padding-bottom: clamp(40px, 6vh, 80px);
   text-align: center;
   position: relative;
 }
@@ -777,13 +841,15 @@ section {
 }
 
 .hero__cta .btn {
-  width: 220px;
+  width: auto;
+  min-width: 220px;
   justify-content: center;
 }
 
 @media (max-width: 560px) {
   .hero__cta .btn {
-    width: 80%;
+    width: auto;
+    min-width: 80%;
   }
 }
 
@@ -799,7 +865,7 @@ section {
   }
 }
 
-/* Hero floating planet */
+/* Planeta flotante principal */
 .hero__orbit {
   position: absolute;
   left: 50%;
@@ -939,7 +1005,7 @@ section {
 
 .hero__scroll {
   position: absolute;
-  bottom: -12px;
+  bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -986,7 +1052,7 @@ section {
   }
 }
 
-/* ---------- 10. COUNTDOWN ---------- */
+/* ---------- 10. CUENTA REGRESIVA ---------- */
 .cd {
   display: flex;
   align-items: stretch;
@@ -1096,7 +1162,7 @@ section {
   }
 }
 
-/* ---------- 11. STORY ---------- */
+/* ---------- 11. HISTORIA ---------- */
 .story {}
 
 .story__chapters {
@@ -1137,7 +1203,7 @@ section {
 }
 
 .chapter__art::before {
-  /* tiny twinkle dots inside the art frame */
+  /* pequeños puntos parpadeantes dentro del marco de arte */
   content: '';
   position: absolute;
   inset: 0;
@@ -1201,11 +1267,11 @@ section {
   }
 }
 
-/* ---------- 12. EVENT ---------- */
+/* ---------- 12. EVENTO ---------- */
 .event__card {
   max-width: 880px;
   margin: 0 auto;
-  padding: clamp(32px, 4vw, 56px);
+  padding: clamp(32px, 3.5vw, 56px);
   position: relative;
 }
 
@@ -1305,6 +1371,12 @@ section {
   border-top: 1px dashed var(--line);
 }
 
+.event__actions .btn {
+  flex: 1;
+  min-width: 200px;
+  max-width: 260px;
+}
+
 @media (max-width: 640px) {
   .event__grid {
     grid-template-columns: 1fr;
@@ -1316,7 +1388,7 @@ section {
   }
 }
 
-/* ---------- 13. GALLERY ---------- */
+/* ---------- 13. GALERÍA ---------- */
 .gallery__grid {
   max-width: var(--max);
   margin: 0 auto;
@@ -1333,7 +1405,7 @@ section {
   border: 1px solid var(--line);
   cursor: none;
   transition: transform .5s var(--ease), border-color .35s var(--ease), box-shadow .5s var(--ease);
-  /* Stylized placeholder background — striped + gradient, original */
+  /* Fondo estilizado de marcador de posición — a rayas + gradiente, original */
   background:
     linear-gradient(135deg, rgba(253, 246, 227, 0.04), rgba(233, 196, 106, 0.04)),
     repeating-linear-gradient(45deg, rgba(253, 246, 227, 0.05) 0 8px, transparent 8px 16px),
@@ -1349,7 +1421,7 @@ section {
 }
 
 .tile::before {
-  /* small star icon */
+  /* pequeño icono de estrella */
   content: '✦';
   position: absolute;
   top: 14px;
@@ -1420,7 +1492,7 @@ section {
   }
 }
 
-/* ---------- 14. TIMELINE ---------- */
+/* ---------- 14. LÍNEA DE TIEMPO ---------- */
 .tl {
   max-width: 720px;
   margin: 0 auto;
@@ -1486,7 +1558,7 @@ section {
   text-wrap: pretty;
 }
 
-/* ---------- 15. QUOTES / INTERACTIVE STARS ---------- */
+/* ---------- 15. FRASES / ESTRELLAS INTERACTIVAS ---------- */
 .quotes__field {
   position: relative;
   max-width: 1080px;
@@ -1592,10 +1664,10 @@ section {
   }
 }
 
-/* ---------- 16. FOOTER ---------- */
+/* ---------- 16. PIE DE PÁGINA ---------- */
 .foot {
   position: relative;
-  padding: clamp(80px, 10vw, 140px) var(--pad) clamp(40px, 6vw, 72px);
+  padding: clamp(40px, 6vw, 80px) var(--pad) clamp(20px, 4vw, 40px);
   text-align: center;
   overflow: hidden;
 }
@@ -1698,7 +1770,7 @@ section {
   letter-spacing: .04em;
 }
 
-/* ---------- 17. LIGHTBOX ---------- */
+/* ---------- 17. VISOR DE IMÁGENES ---------- */
 .lightbox {
   position: fixed;
   inset: 0;
@@ -1790,7 +1862,7 @@ section {
   transform: translateY(-50%);
 }
 
-/* ---------- 18. CUSTOM CURSOR ---------- */
+/* ---------- 18. CURSOR PERSONALIZADO ---------- */
 .cursor {
   position: fixed;
   pointer-events: none;
@@ -1833,7 +1905,7 @@ section {
   }
 }
 
-/* ---------- 19. REDUCED MOTION ---------- */
+/* ---------- 19. MOVIMIENTO REDUCIDO ---------- */
 @media (prefers-reduced-motion: reduce) {
 
   *,
@@ -1850,7 +1922,7 @@ section {
   }
 }
 
-/* ---------- 10. SPA VIEW TRANSITIONS ---------- */
+/* ---------- 10. TRANSICIONES DE VISTA SPA ---------- */
 .view-hidden {
   display: none !important;
   opacity: 0 !important;
@@ -1962,7 +2034,7 @@ section {
   box-shadow: 0 10px 24px rgba(233, 196, 106, .45)
 }
 
-/* ---------- Header ---------- */
+/* ---------- Encabezado ---------- */
 .head {
   text-align: center;
   padding: clamp(40px, 6vw, 72px) 24px clamp(24px, 3vw, 32px);
@@ -2022,7 +2094,7 @@ section {
   color: var(--gold)
 }
 
-/* ---------- Postcard stage ---------- */
+/* ---------- Escenario de postal ---------- */
 .stage {
   perspective: 1800px;
   padding: 10px 16px 25px 16px;
@@ -2030,7 +2102,7 @@ section {
   place-items: center;
 }
 
-/* The card: 1050 x 660 — classic postcard 5:3.18, scales down on mobile */
+/* La tarjeta: 1050 x 660 — postal clásica 5:3.18, se escala en móvil */
 .postcard {
   --pw: 1050px;
   --ph: 520px;
@@ -2056,7 +2128,7 @@ section {
   border-radius: 14px;
   overflow: hidden;
   background-color: var(--night-3);
-  /* fallback solid color for iOS bleeding */
+  /* color sólido de respaldo para el sangrado en iOS */
   box-shadow:
     0 30px 60px rgba(0, 0, 0, 0.55),
     0 6px 16px rgba(0, 0, 0, 0.4),
@@ -2073,7 +2145,7 @@ section {
   -webkit-transform: rotateY(180deg) translateZ(1px);
 }
 
-/* ---------- FRONT FACE — illustrated ---------- */
+/* ---------- CARA FRONTAL — ilustrada ---------- */
 .pf {
   width: 100%;
   height: 100%;
@@ -2085,7 +2157,7 @@ section {
   grid-template-columns: 1.1fr 1fr;
 }
 
-/* Decorative starfield inside front face */
+/* Campo de estrellas decorativo dentro de la cara frontal */
 .pf__stars {
   position: absolute;
   inset: 0;
@@ -2114,7 +2186,7 @@ section {
   box-shadow: 0 0 30px rgba(233, 196, 106, 0.45), 0 0 70px rgba(233, 196, 106, 0.2), inset -10px -16px 30px rgba(0, 0, 0, 0.4);
 }
 
-/* Decorative orbit + tiny figure */
+/* Órbita decorativa + figura pequeña */
 .pf__art {
   position: relative;
   grid-column: 1;
@@ -2219,7 +2291,7 @@ section {
   opacity: .6;
 }
 
-/* Right side text block */
+/* Bloque de texto lado derecho */
 .pf__body {
   grid-column: 2;
   position: relative;
@@ -2296,7 +2368,7 @@ section {
   background: linear-gradient(90deg, var(--gold), transparent);
 }
 
-/* Stamp + corners */
+/* Sello + esquinas */
 .pf__stamp {
   position: absolute;
   top: 6%;
@@ -2387,7 +2459,7 @@ section {
   border-top: 0
 }
 
-/* Flip hint on front */
+/* Indicación de giro en el frente */
 .pf__flip-hint {
   position: absolute;
   bottom: 18px;
@@ -2406,12 +2478,12 @@ section {
   height: 14px
 }
 
-/* ---------- BACK FACE — postcard back ---------- */
+/* ---------- CARA TRASERA — reverso de postal ---------- */
 .pb {
   width: 100%;
   height: 100%;
   background:
-    /* paper texture: subtle horizontal fibers + warm gradient */
+    /* textura de papel: fibras horizontales sutiles + gradiente cálido */
     repeating-linear-gradient(0deg, rgba(120, 90, 40, 0.04) 0 1px, transparent 1px 4px),
     radial-gradient(ellipse at 30% 30%, #fbf5e0, #f6efd9 50%, #ede2bf 100%);
   color: var(--ink);
@@ -2422,7 +2494,7 @@ section {
   gap: 16px;
 }
 
-/* paper grain stains */
+/* manchas de grano de papel */
 .pb::before {
   content: '';
   position: absolute;
@@ -2434,7 +2506,7 @@ section {
     radial-gradient(ellipse 200px 80px at 90% 12%, rgba(120, 90, 40, 0.05), transparent 70%);
 }
 
-/* Back left: message + dedication */
+/* Atrás izquierda: mensaje + dedicatoria */
 .pb__left {
   position: relative;
   border-right: 1px dashed rgba(26, 31, 78, 0.28);
@@ -2622,7 +2694,7 @@ section {
   margin-top: 6px;
 }
 
-/* Back right: address-style event panel */
+/* Atrás derecha: panel de evento estilo dirección */
 .pb__right {
   position: relative;
   display: flex;
@@ -2717,7 +2789,7 @@ section {
   color: rgba(26, 31, 78, .7);
 }
 
-/* Postage stamp on back-right */
+/* Sello postal atrás a la derecha */
 .pb__postage {
   position: absolute;
   top: -6px;
@@ -2768,7 +2840,7 @@ section {
   color: rgba(253, 246, 227, .7);
 }
 
-/* Cancellation rings (the postal mark over stamp) */
+/* Anillos de cancelación (la marca postal sobre el sello) */
 .pb__cancel {
   position: absolute;
   top: 86px;
@@ -2805,7 +2877,7 @@ section {
   padding: 2px 4px;
 }
 
-/* Tear-off perforation strip on right edge */
+/* Tira de perforación para arrancar en el borde derecho */
 .pb__perf {
   position: absolute;
   left: 50%;
@@ -2819,14 +2891,14 @@ section {
   transform: translateX(-50%);
 }
 
-/* Hide perf on small screens (we restack) */
+/* Ocultar perforación en pantallas pequeñas (reapilamos) */
 @media (max-width: 720px) {
   .pb__perf {
     display: none
   }
 }
 
-/* Flip hint on back */
+/* Indicación de giro en el reverso */
 .pb__flip-hint {
   position: absolute;
   bottom: 14px;
@@ -2845,7 +2917,7 @@ section {
   height: 14px
 }
 
-/* ---------- Helper caption below card ---------- */
+/* ---------- Leyenda de ayuda debajo de la tarjeta ---------- */
 .stage__caption {
   margin-top: 28px;
   text-align: center;
@@ -2867,7 +2939,7 @@ section {
   font-style: normal;
 }
 
-/* ---------- Edit panel (collapsible) ---------- */
+/* ---------- Panel de edición (colapsable) ---------- */
 .panel {
   max-width: 1050px;
   margin: 0 auto;
@@ -2939,7 +3011,7 @@ section {
   background: rgba(233, 196, 106, 0.06);
 }
 
-/* ---------- Print styles ---------- */
+/* ---------- Estilos de impresión ---------- */
 @media print {
   @page {
     size: auto;
@@ -3009,7 +3081,7 @@ section {
   }
 }
 
-/* ---------- Responsive ---------- */
+/* ---------- Diseño Responsivo ---------- */
 @media (max-width: 720px) {
   .toolbar {
     flex-wrap: wrap;

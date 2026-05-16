@@ -7,14 +7,14 @@
 (() => {
   "use strict";
 
-  /* ---------- INTRO CURTAIN ---------- */
+  /* ---------- CORTINA DE INTRODUCCIÓN ---------- */
   window.addEventListener("load", () => {
     setTimeout(() => {
       document.getElementById("curtain")?.classList.add("is-gone");
-    }, 1000);
+    }, 1400);
   });
 
-  /* ---------- STARFIELD CANVAS ---------- */
+  /* ---------- CANVAS DEL CAMPO DE ESTRELLAS ---------- */
   const canvas = document.getElementById("starfield");
   const ctx = canvas.getContext("2d");
   let stars = [],
@@ -32,7 +32,7 @@
     seedStars();
   }
   function seedStars() {
-    const count = Math.floor((W * H) / 9000); // density
+    const count = Math.floor((W * H) / 9000); // densidad
     stars = new Array(count).fill(0).map(() => ({
       x: Math.random() * W,
       y: Math.random() * H,
@@ -67,7 +67,7 @@
   window.addEventListener("resize", resizeCanvas);
   requestAnimationFrame(tick);
 
-  /* ---------- SHOOTING STARS (occasional) ---------- */
+  /* ---------- ESTRELLAS FUGACES (ocasionales) ---------- */
   const shooter = document.getElementById("shootingStar");
   function fireShootingStar() {
     if (!shooter) return;
@@ -76,7 +76,7 @@
     shooter.style.left = startX + "px";
     shooter.style.top = startY + "px";
     shooter.classList.remove("is-flying");
-    void shooter.offsetWidth; // reflow
+    void shooter.offsetWidth; // forzar reflujo (reflow)
     shooter.classList.add("is-flying");
   }
   setInterval(() => {
@@ -85,7 +85,7 @@
   }, 6500);
   setTimeout(fireShootingStar, 2400);
 
-  /* ---------- PARALLAX (subtle) ---------- */
+  /* ---------- PARALLAX (sutil) ---------- */
   const parallaxEls = document.querySelectorAll("[data-parallax]");
   let scrollY = window.scrollY;
   function onScroll() {
@@ -93,19 +93,19 @@
     parallaxEls.forEach((el) => {
       const rate = parseFloat(el.dataset.parallax) || 0.2;
       el.style.transform = `translate3d(0, ${-(scrollY * rate)}px, 0)`;
-      // hero orbit needs to keep its centering
+      // la órbita de la sección principal debe mantener su centrado
       if (el.classList.contains("hero__orbit")) {
         el.style.transform = `translate(-50%, calc(-50% + ${-(scrollY * rate)}px))`;
       }
     });
-    // Nav stuck state
+    // Estado anclado de la navegación
     nav?.classList.toggle("is-stuck", scrollY > 24);
   }
   const nav = document.getElementById("nav");
   window.addEventListener("scroll", onScroll, { passive: true });
   onScroll();
 
-  /* ---------- COUNTDOWN ---------- */
+  /* ---------- CUENTA REGRESIVA ---------- */
   const TARGET = new Date("2026-08-30T15:00:00").getTime();
   const cdDays = document.getElementById("cd-days");
   const cdHrs = document.getElementById("cd-hours");
@@ -142,13 +142,13 @@
   updateCD();
   setInterval(updateCD, 1000);
 
-  /* ---------- REVEAL ON SCROLL ---------- */
+  /* ---------- REVELAR AL HACER SCROLL ---------- */
   const revealEls = document.querySelectorAll(".reveal, .tl__item");
   const io = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry, i) => {
         if (entry.isIntersecting) {
-          // small stagger for timeline items
+          // pequeño retraso escalonado para elementos de la línea de tiempo
           if (entry.target.classList.contains("tl__item")) {
             const idx = Array.from(entry.target.parentElement.children).indexOf(
               entry.target,
@@ -164,7 +164,7 @@
   );
   revealEls.forEach((el) => io.observe(el));
 
-  /* ---------- LIGHTBOX ---------- */
+  /* ---------- VISOR DE IMÁGENES ---------- */
   const tiles = document.querySelectorAll(".tile");
   const lb = document.getElementById("lightbox");
   const lbArt = document.getElementById("lbArt");
@@ -173,14 +173,33 @@
   const lbPrev = document.getElementById("lbPrev");
   const lbNext = document.getElementById("lbNext");
   let lbIdx = 0;
-  const tileData = Array.from(tiles).map((t) => ({
-    caption: t.querySelector(".tile__caption")?.textContent || "",
-    n: t.dataset.tile,
-  }));
+  const tileData = Array.from(tiles).map((t) => {
+    const bgDiv = t.querySelector('div[style*="background-image"]');
+    const bgStyle = t.style.backgroundImage || bgDiv?.style.backgroundImage || "";
+    const urlMatch = bgStyle.match(/url\(["']?(.+?)["']?\)/);
+    return {
+      caption: t.querySelector(".tile__caption")?.textContent || "",
+      n: t.dataset.tile,
+      imgUrl: urlMatch ? urlMatch[1] : "",
+      transform: bgDiv?.style.transform || t.style.transform || ""
+    };
+  });
   function openLB(i) {
     lbIdx = (i + tileData.length) % tileData.length;
     const d = tileData[lbIdx];
-    lbArt.textContent = "✦  Foto " + d.n + "  ✦";
+    lbArt.innerHTML = "";
+    if (d.imgUrl) {
+      const img = document.createElement("img");
+      img.src = d.imgUrl;
+      img.style.maxWidth = "100%";
+      img.style.maxHeight = "100%";
+      img.style.objectFit = "contain";
+      img.style.borderRadius = "8px";
+      img.style.transform = d.transform;
+      lbArt.appendChild(img);
+    } else {
+      lbArt.textContent = "✦  Foto " + d.n + "  ✦";
+    }
     lbCap.textContent = d.caption;
     lb.classList.add("is-open");
     lb.setAttribute("aria-hidden", "false");
@@ -203,7 +222,7 @@
     if (e.key === "ArrowRight") openLB(lbIdx + 1);
   });
 
-  /* ---------- AUDIO TOGGLE (gentle WebAudio pad, no external file) ---------- */
+  /* ---------- ALTERNAR AUDIO (pad suave de WebAudio, sin archivo externo) ---------- */
   const audioBtn = document.getElementById("audioToggle");
   let audioCtx = null,
     masterGain = null,
@@ -214,14 +233,14 @@
     masterGain.gain.value = 0;
     masterGain.connect(audioCtx.destination);
 
-    // Soft pad: a few detuned sines + slow LFO on filter
+    // Pad suave: algunas ondas senoidales desafinadas + LFO lento en el filtro
     const filter = audioCtx.createBiquadFilter();
     filter.type = "lowpass";
     filter.frequency.value = 900;
     filter.Q.value = 0.6;
     filter.connect(masterGain);
 
-    const notes = [220, 277.18, 329.63, 440]; // A3, C#4, E4, A4 — open major
+    const notes = [220, 277.18, 329.63, 440]; // A3, C#4, E4, A4 — mayor abierto
     notes.forEach((f, i) => {
       const o = audioCtx.createOscillator();
       o.type = i === 0 ? "sine" : i === 3 ? "triangle" : "sine";
@@ -234,7 +253,7 @@
       oscNodes.push({ o, g });
     });
 
-    // LFO on filter cutoff
+    // LFO en el corte del filtro
     const lfo = audioCtx.createOscillator();
     const lfoGain = audioCtx.createGain();
     lfo.frequency.value = 0.08;
@@ -257,7 +276,7 @@
     setAudio(on);
   });
 
-  /* ---------- CUSTOM CURSOR ---------- */
+  /* ---------- CURSOR PERSONALIZADO ---------- */
   const cursor = document.getElementById("cursor");
   const dot = cursor.querySelector(".cursor__dot");
   const ring = cursor.querySelector(".cursor__ring");
@@ -303,7 +322,7 @@
     cursor.style.display = "none";
   }
 
-  /* ---------- INTERACTIVE QUOTE STARS ---------- */
+  /* ---------- FRASES INTERACTIVAS / ESTRELLAS ---------- */
   const field = document.getElementById("quotesField");
   if (field) {
     const N = 60;
@@ -347,160 +366,11 @@
     });
   }
 
-  /* ---------- VISIBILITY: pause heavy work ---------- */
+  /* ---------- VISIBILIDAD: pausar trabajo pesado ---------- */
   document.addEventListener("visibilitychange", () => {
     if (document.hidden && audioCtx && audioCtx.state === "running") {
       audioCtx.suspend();
       audioBtn?.setAttribute("aria-pressed", "false");
     }
   });
-
-
-  /* ---------- SPA TRANSITIONS ---------- */
-  const mainView = document.getElementById('main-view');
-  const invView = document.getElementById('invitation-view');
-  const backBtn = document.getElementById('backToHomeBtn');
-
-  // Instead of navigating, we switch views
-  document.querySelectorAll('a[href="invitación.html"]').forEach(link => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      mainView.style.opacity = '0';
-      setTimeout(() => {
-        mainView.classList.add('view-hidden');
-        invView.style.opacity = '0';
-        invView.classList.remove('view-hidden');
-        // trigger reflow
-        void invView.offsetWidth;
-        invView.style.opacity = '1';
-        window.scrollTo(0, 0);
-      }, 600);
-    });
-  });
-
-  if (backBtn) {
-    backBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      invView.style.opacity = '0';
-      setTimeout(() => {
-        invView.classList.add('view-hidden');
-        mainView.style.opacity = '0';
-        mainView.classList.remove('view-hidden');
-        void mainView.offsetWidth;
-        mainView.style.opacity = '1';
-      }, 600);
-    });
-  }
-
-  (() => {
-    'use strict';
-    const card = document.getElementById('postcard');
-    const flipBtn = document.getElementById('flipBtn');
-    const printBtn = document.getElementById('printBtn');
-
-    /* ---- FLIP ---- */
-    function toggleFlip() { card.classList.toggle('is-flipped'); }
-    card.addEventListener('click', (e) => {
-      // ignore clicks inside form fields / buttons
-      if (e.target.closest('input, textarea, button')) return;
-      toggleFlip();
-    });
-    card.addEventListener('keydown', (e) => {
-      if (e.target !== card) return;
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleFlip(); }
-    });
-    flipBtn.addEventListener('click', toggleFlip);
-
-    /* ---- TWO-WAY BIND (panel ↔ postcard) ---- */
-    const state = { family: '', adults: 0, kids: 0 };
-
-    function refresh() {
-      document.querySelectorAll('[data-bind-display]').forEach(el => {
-        const key = el.dataset.bindDisplay;
-        const v = state[key];
-        if (key === 'family') {
-          el.textContent = (v && v.trim()) ? v : '_____________';
-        } else {
-          el.textContent = v;
-        }
-      });
-      document.querySelectorAll('[data-bind]').forEach(el => {
-        const key = el.dataset.bind;
-        if (el.value !== String(state[key])) el.value = state[key];
-      });
-      // disable steppers at edges
-      document.querySelectorAll('[data-counter]').forEach(c => {
-        const key = c.dataset.counter;
-        const minus = c.querySelector('[data-step="-1"]');
-        const plus = c.querySelector('[data-step="+1"]');
-        if (minus) minus.disabled = state[key] <= 0;
-        if (plus) plus.disabled = state[key] >= 20;
-      });
-    }
-
-    document.querySelectorAll('[data-bind]').forEach(el => {
-      el.addEventListener('input', () => {
-        const key = el.dataset.bind;
-        if (key === 'family') {
-          state.family = el.value;
-        } else {
-          let n = parseInt(el.value, 10);
-          if (isNaN(n)) n = 0;
-          state[key] = Math.max(0, Math.min(20, n));
-        }
-        refresh();
-      });
-    });
-
-    document.querySelectorAll('[data-counter] [data-step]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const counter = btn.closest('[data-counter]');
-        const key = counter.dataset.counter;
-        const step = parseInt(btn.dataset.step, 10);
-        state[key] = Math.max(0, Math.min(20, state[key] + step));
-        refresh();
-      });
-    });
-
-    /* ---- FETCH FROM API ---- */
-    async function loadInvitation() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const hash = urlParams.get('inv');
-
-      if (hash) {
-        try {
-          // Usa localhost si se abre localmente, de lo contrario usa ruta relativa
-          const baseUrl = 'https://project-bpyrl.vercel.app';
-
-          const res = await fetch(`${baseUrl}/api/invitation/${hash}`);
-          if (res.ok) {
-            const json = await res.json();
-            if (json.success && json.data) {
-              state.family = json.data.f || '';
-              state.adults = json.data.nj || 0;
-              state.kids = json.data.j || 0;
-            }
-          }
-        } catch (e) {
-          console.error("Error al cargar la invitación:", e);
-        }
-      }
-      refresh();
-    }
-
-    loadInvitation();
-
-    /* ---- PRINT (now prints both sides) ---- */
-    printBtn?.addEventListener('click', () => {
-      window.print();
-    });
-
-    /* ---- KEYBOARD SHORTCUTS ---- */
-    document.addEventListener('keydown', (e) => {
-      if (e.target.matches('input, textarea')) return;
-      if (e.key.toLowerCase() === 'f') { toggleFlip(); }
-      if (e.key.toLowerCase() === 'p') { e.preventDefault(); printBtn?.click(); }
-    });
-  })();
 })();
