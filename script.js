@@ -189,15 +189,13 @@
     const d = tileData[lbIdx];
     lbArt.innerHTML = "";
     if (d.imgUrl) {
+      lbArt.classList.remove("lightbox__art--placeholder");
       const img = document.createElement("img");
       img.src = d.imgUrl;
-      img.style.maxWidth = "100%";
-      img.style.maxHeight = "100%";
-      img.style.objectFit = "contain";
-      img.style.borderRadius = "8px";
       img.style.transform = d.transform;
       lbArt.appendChild(img);
     } else {
+      lbArt.classList.add("lightbox__art--placeholder");
       lbArt.textContent = "✦  Foto " + d.n + "  ✦";
     }
     lbCap.textContent = d.caption;

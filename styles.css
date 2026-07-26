@@ -1792,27 +1792,43 @@ section {
 
 .lightbox__inner {
   margin: 0;
-  max-width: 900px;
+  max-width: min(900px, 92vw);
   width: 100%;
   display: grid;
   gap: 18px;
+  justify-items: center;
 }
 
 .lightbox__art {
-  aspect-ratio: 4/3;
+  max-width: 100%;
+  max-height: 76vh;
   border-radius: 24px;
   overflow: hidden;
   border: 1px solid var(--line-strong);
-  background:
-    linear-gradient(135deg, rgba(253, 246, 227, 0.04), rgba(233, 196, 106, 0.04)),
-    repeating-linear-gradient(45deg, rgba(253, 246, 227, 0.05) 0 12px, transparent 12px 24px),
-    radial-gradient(ellipse at 30% 30%, rgba(80, 120, 220, 0.35), rgba(10, 14, 39, 0.7) 70%);
   display: grid;
   place-items: center;
   font-family: var(--f-display);
   font-style: italic;
   color: rgba(253, 246, 227, 0.6);
   font-size: clamp(20px, 3vw, 28px);
+}
+
+.lightbox__art--placeholder {
+  aspect-ratio: 4/3;
+  width: 100%;
+  background:
+    linear-gradient(135deg, rgba(253, 246, 227, 0.04), rgba(233, 196, 106, 0.04)),
+    repeating-linear-gradient(45deg, rgba(253, 246, 227, 0.05) 0 12px, transparent 12px 24px),
+    radial-gradient(ellipse at 30% 30%, rgba(80, 120, 220, 0.35), rgba(10, 14, 39, 0.7) 70%);
+}
+
+.lightbox__art img {
+  display: block;
+  max-width: 100%;
+  max-height: 76vh;
+  width: auto;
+  height: auto;
+  border-radius: 24px;
 }
 
 .lightbox__caption {
