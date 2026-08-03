@@ -430,6 +430,18 @@
     /* ---- TWO-WAY BIND (panel ↔ postcard) ---- */
     const state = { family: '', adults: 0, kids: 0 };
 
+    /* ---- WHATSAPP: incluir el nombre de la familia en el mensaje ---- */
+    const waConfirmBtn = document.getElementById('waConfirmBtn');
+    const waBaseText = '¡Confirmo mi asistencia al cumple de Thiago!';
+    function updateWhatsAppLink() {
+      if (!waConfirmBtn) return;
+      const family = state.family && state.family.trim();
+      const text = family ? `${waBaseText} Somos la familia ${family}.` : waBaseText;
+      const url = new URL(waConfirmBtn.href);
+      url.searchParams.set('text', text);
+      waConfirmBtn.href = url.toString();
+    }
+
     function refresh() {
       document.querySelectorAll('[data-bind-display]').forEach(el => {
         const key = el.dataset.bindDisplay;
@@ -452,6 +464,7 @@
         if (minus) minus.disabled = state[key] <= 0;
         if (plus) plus.disabled = state[key] >= 20;
       });
+      updateWhatsAppLink();
     }
 
     document.querySelectorAll('[data-bind]').forEach(el => {
