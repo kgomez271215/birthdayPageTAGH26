@@ -105,6 +105,21 @@
   window.addEventListener("scroll", onScroll, { passive: true });
   onScroll();
 
+  /* ---------- MENÚ MÓVIL ---------- */
+  const navToggle = document.getElementById("navToggle");
+  const navLinks = document.getElementById("navLinks");
+  function setNavOpen(open) {
+    nav?.classList.toggle("is-open", open);
+    navToggle?.setAttribute("aria-expanded", open ? "true" : "false");
+    navToggle?.setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
+  }
+  navToggle?.addEventListener("click", () => {
+    setNavOpen(!nav.classList.contains("is-open"));
+  });
+  navLinks?.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => setNavOpen(false));
+  });
+
   /* ---------- CUENTA REGRESIVA ---------- */
   const TARGET = new Date("2026-08-30T15:00:00").getTime();
   const cdDays = document.getElementById("cd-days");
